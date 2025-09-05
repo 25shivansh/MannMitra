@@ -65,6 +65,7 @@
     "@tanstack/react-query-devtools": "^5.64.2",
     "@tanstack/react-table": "^8.20.6",
     "@types/bcryptjs": "^2.4.6",
+    "@vapi-ai/web": "^2.3.10",
     "axios": "^1.7.9",
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.0",

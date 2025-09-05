@@ -7,19 +7,12 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
-
   reactStrictMode: false,
 
   // Disable image optimization warnings
   images: {
     unoptimized: true,
   },
-
-  // Suppress hydration warnings
-  suppressHydrationWarning: true,
 
   // Ignore specific page extensions
   pageExtensions: ["tsx", "ts", "jsx", "js"].filter(
