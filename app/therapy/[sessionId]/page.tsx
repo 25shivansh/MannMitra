@@ -49,14 +49,6 @@ interface SuggestedQuestion {
   text: string;
 }
 
-interface StressPrompt {
-  trigger: string;
-  activity: {
-    type: "breathing" | "garden" | "forest" | "waves";
-    title: string;
-    description: string;
-  };
-}
 
 interface ApiResponse {
   message: string;
@@ -98,7 +90,6 @@ export default function TherapyPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [stressPrompt, setStressPrompt] = useState<StressPrompt | null>(null);
   const [showActivity, setShowActivity] = useState(false);
   const [isChatPaused, setIsChatPaused] = useState(false);
   const [showNFTCelebration, setShowNFTCelebration] = useState(false);
@@ -261,13 +252,7 @@ export default function TherapyPage() {
       };
       setMessages((prev) => [...prev, userMessage]);
 
-      // Check for stress signals
-      const stressCheck = detectStressSignals(currentMessage);
-      if (stressCheck) {
-        setStressPrompt(stressCheck);
-        setIsTyping(false);
-        return;
-      }
+      // Stress signal detection removed - all messages now go to AI
 
       console.log("Sending message to API...");
       // Send message to API
@@ -275,17 +260,23 @@ export default function TherapyPage() {
       console.log("Raw API response:", response);
 
       // Parse the response if it's a string
-      const aiResponse =
+      // Parse the response if it's a string
+        const aiResponse =
         typeof response === "string" ? JSON.parse(response) : response;
-      console.log("Parsed AI response:", aiResponse);
+        console.log("Parsed AI response:", aiResponse);
 
-      // Add AI response with metadata
-      const assistantMessage: ChatMessage = {
+        // Normalize assistant text
+        const assistantText =
+        typeof aiResponse.message === "string"
+          ? aiResponse.message
+          : aiResponse.message?.content ||
+            aiResponse.response ||
+            "I'm here to support you. Could you tell me more about what's on your mind?";
+
+        // Add AI response with metadata
+        const assistantMessage: ChatMessage = {
         role: "assistant",
-        content:
-          aiResponse.response ||
-          aiResponse.message ||
-          "I'm here to support you. Could you tell me more about what's on your mind?",
+        content: assistantText,
         timestamp: new Date(),
         metadata: {
           analysis: aiResponse.analysis || {
@@ -296,13 +287,12 @@ export default function TherapyPage() {
             progressIndicators: [],
           },
           technique: aiResponse.metadata?.technique || "supportive",
-          goal: aiResponse.metadata?.currentGoal || "Provide support",
-          progress: aiResponse.metadata?.progress || {
-            emotionalState: "neutral",
-            riskLevel: 0,
-          },
+          goal: aiResponse.metadata?.goal || "Provide support",
+          progress: aiResponse.metadata?.progress || [],
         },
       };
+    
+
 
       console.log("Created assistant message:", assistantMessage);
 
@@ -337,58 +327,6 @@ export default function TherapyPage() {
     );
   }
 
-  const detectStressSignals = (message: string): StressPrompt | null => {
-    const stressKeywords = [
-      "stress",
-      "anxiety",
-      "worried",
-      "panic",
-      "overwhelmed",
-      "nervous",
-      "tense",
-      "pressure",
-      "can't cope",
-      "exhausted",
-    ];
-
-    const lowercaseMsg = message.toLowerCase();
-    const foundKeyword = stressKeywords.find((keyword) =>
-      lowercaseMsg.includes(keyword)
-    );
-
-    if (foundKeyword) {
-      const activities = [
-        {
-          type: "breathing" as const,
-          title: "Breathing Exercise",
-          description:
-            "Follow calming breathing exercises with visual guidance",
-        },
-        {
-          type: "garden" as const,
-          title: "Zen Garden",
-          description: "Create and maintain your digital peaceful space",
-        },
-        {
-          type: "forest" as const,
-          title: "Mindful Forest",
-          description: "Take a peaceful walk through a virtual forest",
-        },
-        {
-          type: "waves" as const,
-          title: "Ocean Waves",
-          description: "Match your breath with gentle ocean waves",
-        },
-      ];
-
-      return {
-        trigger: foundKeyword,
-        activity: activities[Math.floor(Math.random() * activities.length)],
-      };
-    }
-
-    return null;
-  };
 
   const handleSuggestedQuestion = async (text: string) => {
     if (!sessionId) {
