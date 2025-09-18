@@ -531,6 +531,10 @@ export default function Dashboard() {
             <Button variant="outline" size="icon">
               <Bell className="h-5 w-5" />
             </Button>
+            {/* Activity Page Button */}
+            <Button variant="default" onClick={() => router.push('/activity')}>
+              Take Assessment
+            </Button>
           </div>
         </div>
 
