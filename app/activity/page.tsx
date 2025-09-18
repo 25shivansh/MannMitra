@@ -44,7 +44,7 @@ const ScreeningSelection = () => {
   ];
 
   const handleScreeningSelect = (screeningId: string) => {
-    // router.push(**/screening/${screeningId}**);
+     router.push(`/activity/${screeningId}`);
   };
 
   return (
