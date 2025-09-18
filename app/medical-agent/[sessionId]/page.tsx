@@ -30,6 +30,8 @@ export default function MedicalAgentPage() {
   const [isConnected, setIsConnected] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState("Connected");
   const vapiRef = useRef<any>(null);
+  const [currentRole, setCurrentRole] = useState<"user" | "assistant" | null>(null);
+  const [liveTranscript, setLiveTranscript] = useState<string>("");
 
   useEffect(() => {
     // Debug: Log all env vars to see what's available
@@ -62,7 +64,21 @@ export default function MedicalAgentPage() {
 
       vapiRef.current.on('message', (message: any) => {
         if (message?.type === 'transcript') {
-          console.log(`${message.role}: ${message.transcript}`);
+          const { role, transcriptType, transcript } = message;
+          if (transcriptType === 'partial') {
+            setLiveTranscript(transcript || "");
+            setCurrentRole(role);
+          } else {
+            const finalMsg: Message = {
+              id: Date.now().toString(),
+              role: role,
+              content: transcript || "",
+              timestamp: new Date(),
+            };
+            setMessages(prev => [...prev, finalMsg]);
+            setLiveTranscript("");
+            setCurrentRole(null);
+          }
         }
       });
     } catch (err) {
@@ -221,13 +237,29 @@ export default function MedicalAgentPage() {
                       : "bg-gray-800/50 text-gray-200 border border-gray-700/50"
                   }`}
                 >
-                  <p className="text-sm">{message.content}</p>
+                  <p className="text-sm">{(message as any).content ?? (message as any).text}</p>
                   <p className="text-xs opacity-70 mt-1">
-                    {message.timestamp.toLocaleTimeString()}
+                    {((message as any).timestamp ? new Date((message as any).timestamp).toLocaleTimeString() : "")}
                   </p>
                 </div>
               </div>
             ))}
+
+            {/* Live transcript bubble */}
+            {liveTranscript && currentRole && (
+              <div className={`flex ${currentRole === "user" ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg opacity-90 ${
+                    currentRole === "user"
+                      ? "bg-gradient-to-r from-green-300 to-teal-400 text-gray-900"
+                      : "bg-gray-800/50 text-gray-200 border border-gray-700/50"
+                  }`}
+                >
+                  <p className="text-sm">{liveTranscript}</p>
+                  <p className="text-[10px] uppercase tracking-wide opacity-70 mt-1">{currentRole} (speaking)</p>
+                </div>
+              </div>
+            )}
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-gray-800/50 text-gray-200 border border-gray-700/50 px-4 py-2 rounded-lg">

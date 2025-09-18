@@ -138,36 +138,36 @@ export function AddNewSession({ onSessionCreated }: AddNewSessionProps) {
           Consult AI Councellor Now
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] w-[95vw] max-h-[90vh] overflow-y-auto bg-gray-900/95 backdrop-blur-sm border-gray-700/50 mx-4 my-8">
-        <DialogHeader className="text-center pb-6">
-          <DialogTitle className="text-3xl font-bold bg-gradient-to-r from-green-300 via-teal-200 to-purple-300 bg-clip-text text-transparent mb-3">
+      <DialogContent className="sm:max-w-[900px] w-[95vw] bg-gray-900/95 backdrop-blur-sm border-gray-700/50 shadow-[0_0_30px_rgba(52,211,153,0.15)] mx-4 my-8">
+        <DialogHeader className="text-center pb-4">
+          <DialogTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-300 via-teal-200 to-purple-300 bg-clip-text text-transparent mb-2">
             Start New Session
           </DialogTitle>
-          <DialogDescription className="text-gray-400 text-lg max-w-md mx-auto">
+          <DialogDescription className="text-gray-400 text-base md:text-lg max-w-xl mx-auto">
             Create a new therapy or counseling session tailored to your needs.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-8 px-2">
+        <form onSubmit={handleSubmit} className="space-y-6 px-2">
           {/* Session Type Selection */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Label className="text-gray-300 font-medium text-center block text-lg">Session Type</Label>
             <RadioGroup
               value={formData.sessionType}
               onValueChange={(value) => handleInputChange("sessionType", value)}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto"
+              className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto"
             >
               {sessionTypes.map((type) => (
                 <div key={type.value} className="flex items-center space-x-3">
                   <RadioGroupItem value={type.value} id={type.value} className="text-green-300" />
                   <Label
                     htmlFor={type.value}
-                    className="flex items-center space-x-2 cursor-pointer flex-1 p-3 rounded-lg border border-gray-700/50 hover:border-green-300/50 transition-colors"
+                    className="flex items-center space-x-2 cursor-pointer flex-1 p-3 rounded-lg border border-gray-700/50 hover:border-green-300/50 bg-gray-800/40 transition-colors"
                   >
                     <span className="text-green-300">{type.icon}</span>
                     <div>
-                      <div className="font-medium text-gray-200">{type.label}</div>
-                      <div className="text-sm text-gray-400">{type.description}</div>
+                      <div className="font-medium text-gray-200 leading-tight">{type.label}</div>
+                      <div className="text-sm text-gray-400 leading-tight">{type.description}</div>
                     </div>
                   </Label>
                 </div>
@@ -175,62 +175,54 @@ export function AddNewSession({ onSessionCreated }: AddNewSessionProps) {
             </RadioGroup>
           </div>
 
-          {/* Session Title */}
-          <div className="space-y-3 max-w-2xl mx-auto">
-            <Label htmlFor="title" className="text-gray-300 font-medium text-center block text-lg">
-              Session Title
-            </Label>
-            <Input
-              id="title"
-              placeholder="e.g., Weekly Check-in, Anxiety Management"
-              value={formData.title}
-              onChange={(e) => handleInputChange("title", e.target.value)}
-              className="bg-gray-800/50 border-gray-700/50 text-gray-200 placeholder-gray-500 focus:border-green-300/50 w-full"
-            />
+          {/* Session Title + Focus Area */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+            <div className="space-y-2">
+              <Label htmlFor="title" className="text-gray-300 font-medium block">Session Title</Label>
+              <Input
+                id="title"
+                placeholder="e.g., Weekly Check-in, Anxiety Management"
+                value={formData.title}
+                onChange={(e) => handleInputChange("title", e.target.value)}
+                className="bg-gray-800/50 border-gray-700/50 text-gray-200 placeholder-gray-500 focus:border-green-300/50 w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="focusArea" className="text-gray-300 font-medium block">Focus Area (Optional)</Label>
+              <Select
+                value={formData.focusArea}
+                onValueChange={(value) => handleInputChange("focusArea", value)}
+              >
+                <SelectTrigger className="bg-gray-800/50 border-gray-700/50 text-gray-200 focus:border-green-300/50 w-full">
+                  <SelectValue placeholder="Select a focus area" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-gray-700">
+                  {focusAreas.map((area) => (
+                    <SelectItem key={area} value={area} className="text-gray-200 hover:bg-gray-700">
+                      {area}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Description */}
-          <div className="space-y-3 max-w-2xl mx-auto">
-            <Label htmlFor="description" className="text-gray-300 font-medium text-center block text-lg">
-              What would you like to focus on?
-            </Label>
+          <div className="space-y-2 max-w-2xl mx-auto">
+            <Label htmlFor="description" className="text-gray-300 font-medium block">What would you like to focus on?</Label>
             <Textarea
               id="description"
               placeholder="Describe what you'd like to discuss or work on in this session..."
               value={formData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
-              className="bg-gray-800/50 border-gray-700/50 text-gray-200 placeholder-gray-500 focus:border-green-300/50 min-h-[120px] w-full resize-none"
+              className="bg-gray-800/50 border-gray-700/50 text-gray-200 placeholder-gray-500 focus:border-green-300/50 min-h-[100px] w-full resize-none"
             />
           </div>
 
-          {/* Focus Area */}
-          <div className="space-y-3 max-w-2xl mx-auto">
-            <Label htmlFor="focusArea" className="text-gray-300 font-medium text-center block text-lg">
-              Focus Area (Optional)
-            </Label>
-            <Select
-              value={formData.focusArea}
-              onValueChange={(value) => handleInputChange("focusArea", value)}
-            >
-              <SelectTrigger className="bg-gray-800/50 border-gray-700/50 text-gray-200 focus:border-green-300/50 w-full">
-                <SelectValue placeholder="Select a focus area" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700">
-                {focusAreas.map((area) => (
-                  <SelectItem key={area} value={area} className="text-gray-200 hover:bg-gray-700">
-                    {area}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Duration and Privacy */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <div className="space-y-3">
-              <Label htmlFor="duration" className="text-gray-300 font-medium text-center block text-lg">
-                Duration (minutes)
-              </Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+            <div className="space-y-2">
+              <Label htmlFor="duration" className="text-gray-300 font-medium block">Duration (minutes)</Label>
               <Select
                 value={formData.duration}
                 onValueChange={(value) => handleInputChange("duration", value)}
@@ -247,12 +239,12 @@ export function AddNewSession({ onSessionCreated }: AddNewSessionProps) {
               </Select>
             </div>
 
-            <div className="space-y-3">
-              <Label className="text-gray-300 font-medium text-center block text-lg">Privacy</Label>
+            <div className="space-y-2">
+              <Label className="text-gray-300 font-medium block">Privacy</Label>
               <RadioGroup
                 value={formData.privacy}
                 onValueChange={(value) => handleInputChange("privacy", value)}
-                className="flex justify-center space-x-6"
+                className="flex justify-start space-x-6"
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="private" id="private" className="text-green-300" />
@@ -266,7 +258,7 @@ export function AddNewSession({ onSessionCreated }: AddNewSessionProps) {
             </div>
           </div>
 
-          <DialogFooter className="flex justify-center gap-4 pt-6">
+          <DialogFooter className="flex justify-center gap-4 pt-2">
             <Button
               type="button"
               variant="outline"

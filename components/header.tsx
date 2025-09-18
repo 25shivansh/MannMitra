@@ -10,6 +10,7 @@ import {
   AudioWaveform,
   LogOut,
   LogIn,
+  Mic,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
@@ -67,6 +68,16 @@ export function Header() {
                 <>
                   <Button
                     asChild
+                    variant="outline"
+                    className="hidden md:flex gap-2 border-primary/30 hover:bg-primary/10"
+                  >
+                    <Link href="/workspace">
+                      <Mic className="w-4 h-4 mr-1" />
+                      Voice Chat
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
                     className="hidden md:flex gap-2 bg-primary/90 hover:bg-primary"
                   >
                     <Link href="/therapy/new">
@@ -118,15 +129,27 @@ export function Header() {
                 </Link>
               ))}
               {isAuthenticated && (
-                <Button
-                  asChild
-                  className="mt-2 mx-4 gap-2 bg-primary/90 hover:bg-primary"
-                >
-                  <Link href="/therapy/new">
-                    <MessageCircle className="w-4 h-4" />
-                    <span>Start Chat</span>
-                  </Link>
-                </Button>
+                <>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="mt-2 mx-4 gap-2 border-primary/30 hover:bg-primary/10"
+                  >
+                    <Link href="/workspace">
+                      <Mic className="w-4 h-4" />
+                      <span>Voice Chat</span>
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    className="mt-2 mx-4 gap-2 bg-primary/90 hover:bg-primary"
+                  >
+                    <Link href="/therapy/new">
+                      <MessageCircle className="w-4 h-4" />
+                      <span>Start Chat</span>
+                    </Link>
+                  </Button>
+                </>
               )}
             </nav>
           </div>
