@@ -535,6 +535,10 @@ export default function Dashboard() {
             <Button variant="default" onClick={() => router.push('/activity')}>
               Take Assessment
             </Button>
+            {/* Book Appointment Button */}
+            <Button variant="default" onClick={() => router.push('/book')}>
+              Book Appointment
+            </Button>
           </div>
         </div>
 

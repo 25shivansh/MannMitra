@@ -103,9 +103,11 @@ export const tests: { [key: string]: ScreeningTest } = {
         
     ],
     interpretation: [
-        { score: [1, 4], severity: 'Minimal depression', recommendation: 'Monitor; may not require treatment.' },
-        { score: [5, 9], severity: 'Mild depression', recommendation: 'Consider watchful waiting; follow-up.' },
-        // ... other ranges
+    { score: [0, 4], severity: 'Minimal depression', recommendation: 'Monitor; may not require treatment.' },
+    { score: [5, 9], severity: 'Mild depression', recommendation: 'Consider watchful waiting; follow-up.' },
+    { score: [10, 14], severity: 'Moderate depression', recommendation: 'Consider counseling or follow-up.' },
+    { score: [15, 19], severity: 'Moderately severe depression', recommendation: 'Active treatment with medication, therapy, or both.' },
+    { score: [20, 27], severity: 'Severe depression', recommendation: 'Immediate initiation of therapy and/or medication.' }
     ],
   },
   'gad-7': {
@@ -189,7 +191,8 @@ export const tests: { [key: string]: ScreeningTest } = {
   interpretation: [
     { score: [0, 4], severity: 'Minimal anxiety', recommendation: 'No action needed.' },
     { score: [5, 9], severity: 'Mild anxiety', recommendation: 'Monitor symptoms.' },
-    // ... add other interpretation ranges for GAD-7
+    { score: [10, 14], severity: 'Moderate anxiety', recommendation: 'Consider counseling or follow-up.' },
+    { score: [15, 21], severity: 'Severe anxiety', recommendation: 'Active treatment with medication, therapy, or both.' }
   ],
 },
     'ghq-12': {
@@ -328,12 +331,16 @@ export const tests: { [key: string]: ScreeningTest } = {
 };
 
 export function getTestBySlug(slug: string): ScreeningTest | undefined {
-  // Support aliases: remove hyphens and compare
-  const normalizedSlug = slug.replace(/-/g, '').toLowerCase();
-  for (const key of Object.keys(tests)) {
-    if (key.replace(/-/g, '').toLowerCase() === normalizedSlug) {
-      return tests[key];
+    // Support aliases: remove hyphens and compare, allow partial match for GHQ
+    const normalizedSlug = slug.replace(/-/g, '').toLowerCase();
+    for (const key of Object.keys(tests)) {
+        const normalizedKey = key.replace(/-/g, '').toLowerCase();
+        if (
+            normalizedKey === normalizedSlug ||
+            (normalizedSlug === 'ghq' && normalizedKey.startsWith('ghq'))
+        ) {
+            return tests[key];
+        }
     }
-  }
-  return undefined;
+    return undefined;
 }
